@@ -1,17 +1,27 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div 
+      v-for="f in files" :key="f.id"
+      class="file-item"
+      :class="f['.tag']">{{ f.name }}</div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import {mapGetters} from 'vuex';
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    
+  },
+  computed: {
+    ...mapGetters([
+      'files'
+    ])
+  },
+  created () {
+    this.$store.dispatch('fetchFiles', '')
   }
 }
 </script>
@@ -21,8 +31,8 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  text-align: left;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 20px 30%;
 }
 </style>
