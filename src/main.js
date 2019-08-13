@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from './store';
-import App from './App.vue';
+import App from './components/App.vue';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFile } from '@fortawesome/free-solid-svg-icons'

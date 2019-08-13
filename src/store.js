@@ -5,7 +5,7 @@ import { Dropbox } from 'dropbox';
 Vue.use(Vuex);
 
 let dbx = new Dropbox({
-  accessToken: 'Jdp-RuU5YMsAAAAAAAA23Fx4o_dnSjWRoiJAxFaJik16EIhJvQfr9RJSWO9W66KI'
+  accessToken: 'l9ZkwG0DTsAAAAAAAAAACz_rHKXQbVrdtNNtlGV_8JZnHIXKu8y0WSnaijdcAlXj'
 }); 
 
 const store = new Vuex.Store({
@@ -39,24 +39,27 @@ const store = new Vuex.Store({
     },
     setBreadcrumbs: (state, data) => {
       state.breadcrumbs = data;
+    },
+    setLoadingState: (state, loadingState) => {
+      state.loading = loadingState;
     }
   },
   actions: {
     fetchFiles: ({state, commit, dispatch}, path='') => {
-      state.loading = true;
+      commit('setLoadingState', true);
       commit('setFiles', []);
 
       dbx.filesListFolder({path: path})
         .then(res => {
-          console.info('* ', res)
           commit('setFiles', res.entries)
           dispatch('getThumbnails', res.entries);
         })
         .finally(() => {
-          state.loading = false;
+          commit('setLoadingState', false);
         })
     },
-    getThumbnails: (ctx, files) => {
+    getThumbnails: ({commit}, _files) => {
+      let files = [..._files];
       const paths = files.filter(files => files['.tag'] === 'file')
         .map(file => ({
           path: file.path_lower,
@@ -75,7 +78,8 @@ const store = new Vuex.Store({
               found.thumbnail = file.thumbnail
             }
           }
-        })
+        });
+        commit('setFiles', files)
       })
     },
     selectFolder: ({state, commit, getters, dispatch}, folder) => {
